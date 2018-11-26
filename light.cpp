@@ -1,17 +1,22 @@
 #define GLUT_DISABLE_ATEXIT_HACK
+
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <bits/stdc++.h>
-#define WIDTH 1000
-#define HEIGHT 500
-#define maxn 1500
+
 using namespace std;
+
+const int WIDTH = 1000;
+const int HEIGHT = 500;
+const int maxn = 1500;
+
 struct Point
 {
     double x,y,z;
     Point(){x=0,y=0,z=0;}
     Point(double x,double y,double z):x(x),y(y),z(z){};
 }point[maxn];
+
 GLfloat LightAmbient1[]={0,0,1,1};
 GLfloat LightDiffuse1[]={0,0,1,1};
 GLfloat LightPosition1[]={0,0,0,1};
@@ -27,13 +32,16 @@ GLfloat LightDiffuse3[]={1,0,0,1};
 GLfloat LightPosition3[]={1,0,0,1};
 GLfloat Mat_specular3[]={-1,1,1,1};
 GLfloat Mat_shininess3[]={50};
+
 struct Face
 {
     int a,b,c,d;
     Face(){a=0,b=0,c=0,d=0;}
     Face(int a,int b,int c,int d):a(a),b(b),c(c),d(d){}
 }face[maxn];
+
 int n,m;
+
 void init()
 {
     glMaterialfv(GL_FRONT,GL_SPECULAR,Mat_specular1);
@@ -60,25 +68,30 @@ void init()
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT1);
 }
+
 void get_rotate_z(Point &p,double rad)
 {
-    const double tmp=p.x*cos(rad)+p.y*sin(rad);
-    p.y=p.x*(-sin(rad))+p.y*cos(rad);
-    p.x=tmp;
+    const double tmp = p.x * cos(rad) + p.y * sin(rad);
+    p.y = p.x * (-sin(rad)) + p.y * cos(rad);
+    p.x = tmp;
 }
+
 void get_rotate_y(Point &p,double rad)
 {
     const double tmp=p.x*cos(rad)+p.z*sin(rad);
     p.z=p.x*(-sin(rad))+p.z*cos(rad);
     p.x=tmp;
 }
+
 void get_rotate_x(Point &p,double rad)
 {
     const double tmp=p.y*cos(rad)+p.z*sin(rad);
     p.z=p.y*(-sin(rad))+p.z*cos(rad);
     p.y=tmp;
 }
+
 static int angle=0;
+
 void display()
 {
     glClearColor(1.0,1.0,1.0,1.0);
@@ -97,6 +110,7 @@ void display()
     }
     glFlush();
 }
+
 void changePoint(int x,int y,double& vx,double& vy)
 {
     vx=x,vy=HEIGHT-y;
@@ -105,31 +119,37 @@ void changePoint(int x,int y,double& vx,double& vy)
     vx/=(double)WIDTH/2.0;
     vy/=(double)HEIGHT/2.0;
 }
+
 void rotate_x(double rad)
 {
     for (int i=1;i<=m;i++)
         get_rotate_x(point[i],rad);
 }
+
 void rotate_y(double rad)
 {
     for (int i=1;i<=m;i++)
         get_rotate_y(point[i],rad);
 }
+
 void rotate_z(double rad)
 {
     for (int i=1;i<=m;i++)
         get_rotate_z(point[i],rad);
 }
+
 void move_x(double del)
 {
     for (int i=1;i<=m;i++)
         point[i].x+=del;
 }
+
 void move_y(double del)
 {
     for (int i=1;i<=m;i++)
         point[i].y+=del;
 }
+
 void KeyBoards(unsigned char key,int x,int y)
 {
     printf("Key: %c,x:%d y:%d\n",key,x,y);
@@ -149,6 +169,7 @@ void KeyBoards(unsigned char key,int x,int y)
         rotate_z(acos(-1)/100);
     display();
 }
+
 int main(int argc, char* argv[])
 {
     fstream input1("1.dat");
