@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1543499381 source:c:\users\lenovo\desktop\project\rubber\main.cpp
+	<GL/glew.h>
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<windows.h>
+	<wingdi.h>
+	<GL/glut.h>
+	<assert.h>
+	<GL/gl.h>
+	<GL/glaux.h>
+	<bits/stdc++.h>
+
