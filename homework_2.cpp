@@ -75,7 +75,7 @@ int LoadGLTextures()
 {
 	int Status=FALSE;
 	AUX_RGBImageRec *TextureImage[1];
-    memset(TextureImage,0,sizeof(void *)*1);
+   	memset(TextureImage,0,sizeof(void *)*1);
 	LoadImageFile("NeHe.bmp");
 	{
 		Status=TRUE;
