@@ -61,7 +61,7 @@ void LoadImageFile(char* imageName)
     unsigned long size = 0;
     imageFile = fopen(imageName, "rb");
     fseek(imageFile,18,SEEK_SET);
-    fread(&(image->bWidth), 4, 1, imageFile);
+    fread(&(image->bWidth), 4, 1, imageFile); 
     fread(&(image->bHeight), 4, 1, imageFile);
     fseek(imageFile, 0, SEEK_END);
     size = ftell(imageFile) - 54;
