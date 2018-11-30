@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1543499381 source:c:\users\lenovo\desktop\project\rubber\main.cpp
+1543499381 source:c:\users\lenovo\desktop\project\homework_2\main.cpp
 	<GL/glew.h>
 	<stdio.h>
 	<stdlib.h>
