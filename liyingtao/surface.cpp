@@ -32,9 +32,9 @@ Shape Surface::getShape() const
 
 void Surface::glDrawSurface()
 {
-	if(shape == TRIANGLE)
+	if(getShape() == TRIANGLE)
 		glBegin(GL_TRIANGLES);
-	else if(shape == RECTANGLE)
+	else if(getShape() == RECTANGLE)
 		glBegin(GL_QUADS);
 	else
 		return;
@@ -43,7 +43,7 @@ void Surface::glDrawSurface()
 
 	for(Point &p : point)
 	{
-		glVertex3d(p.x, p.y, p.z);
+		glVertex3d(p.getX(), p.getY(), p.getZ());
 		/*std::cout << "x: " << p.x
 				  << "\ty: " << p.y
 				  << "\tz: " << p.z
