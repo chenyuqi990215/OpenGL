@@ -1,0 +1,13 @@
+Project for homework 2
+
+Contains some bugs:
+The color of the picture may be changed after loading.
+
+Nehe use auxDIBImageLoad function, but it may cause linking error while using it.
+
+If you have a better solution for loading bmp pictures, you can upload your solution.
+Or if you solve the problem of using auxDIBImageLoad function, you can also upload your solution.
+
+Thanks!
+
+Create by Chenyuqi.
