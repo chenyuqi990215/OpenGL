@@ -71,10 +71,11 @@ void Light::init()
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,this->lightModelAmbient);
 	glClearColor(0.0,0.0,0.0,0.0);
 	glShadeModel(GL_SMOOTH);
+	glMaterialfv(GL_FRONT,GL_SPECULAR,this->matSpecular);
+ 	glMaterialfv(GL_FRONT,GL_SHININESS,this->matShininess);
 	if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,this->lightSpecular);
 	if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE, this->lightDiffuse);
     if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT, this->lightAmbient);
-	if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,this->matShininess);
 	glLightfv(this->light,GL_AMBIENT,this->lightAmbient);
 	if (this->type == SPOT_LIGHT) glLightf(this->light,GL_SPOT_CUTOFF,this->angle);
 	glLightfv(this->light,GL_AMBIENT,this->lightAmbient);
