@@ -1,14 +1,10 @@
 #ifndef LIGHT_H_INCLUDED
 #define LIGHT_H_INCLUDED
 #define GLUT_DISABLE_ATEXIT_HACK
-#include <GL/glew.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glaux.h>
-
-class Light
+#include <bits/stdc++.h>
+ class Light
 {
     public:
         enum LightType{SPOT_LIGHT,POINT_LIGHT,DIRECTIONAL_LIGHT};
