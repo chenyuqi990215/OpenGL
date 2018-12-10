@@ -1,4 +1,19 @@
+#define GLUT_DISABLE_ATEXIT_HACK
+#include <GL/glew.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <windows.h>
+#include <wingdi.h>
+#include <GL/glut.h>
+#include <assert.h>
+#include <GL/gl.h>
+#include <GL/glaux.h>
 #include <bits/stdc++.h>
+#include "light.h"
+#define WIDTH 1000
+#define HEIGHT 500
+#define maxn 1500
 using namespace std;
 struct Point
 {
@@ -23,18 +38,18 @@ struct Surface
 };
 class Group
 {
-	friend:
+	public:
 		vector <Surface> s;
-		string textureName; 
-		bool hasTexture; 
+		string textureName;
+		bool hasTexture;
 	public:
 		Group();
 		Group(string textureName);
-}
+};
 Group::Group()
 {
 	this->s.clear();
-	this->textureName=NULL;
+	this->textureName="";
 	this->hasTexture=false;
 }
 Group::Group(string textureName)
@@ -54,7 +69,7 @@ class LoadTexture
 		void load();
 		void init();
 		void enable();
-}
+};
 LoadTexture::LoadTexture(string textureName)
 {
 	this->textureName=textureName;
@@ -65,7 +80,7 @@ void LoadTexture::load()
 	GLint width,height,total_bytes;
 	GLubyte* pixels=0;
 	GLuint textureID=0;
-	FILE* pFile=fopen(this->textureName,"rb");
+	FILE* pFile=fopen(this->textureName.c_str(),"rb");
 	fseek(pFile,0x0012,SEEK_SET);
 	fread(&width,4,1,pFile);
 	fread(&height,4,1,pFile);
@@ -76,8 +91,6 @@ void LoadTexture::load()
 	total_bytes=line_bytes*height;
 	pixels=(GLubyte*)malloc(total_bytes);
     fread(pixels,total_bytes,1,pFile);
-	// 读取像素数据
-	// 分配一个新的纹理编号
 	glGenTextures(1,&this->textureID);
 	glBindTexture(GL_TEXTURE_2D,this->textureID);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_BGR_EXT,GL_UNSIGNED_BYTE,pixels);
@@ -95,7 +108,7 @@ void LoadTexture::enable()
 {
 	glBindTexture(GL_TEXTURE_2D,this->textureID);
 }
-class 3DModel : public Group
+class Model : public Group
 {
 	private:
 		vector <Point> v;
@@ -103,19 +116,18 @@ class 3DModel : public Group
 		vector <Normal> vn;
 		vector <Group> g;
 		string fileName;
-		void loadv();
-		void loadvt();
-		void loadvn();
+		void load();
+		void loadg();
+		void drawGroup(Group g);
 		void decode(string s,Point &v,Texture &vt,Normal &vn);
 	public:
-		3DModel(string fileName);
+		Model(string fileName);
 		void loadModel();
 		void drawModel();
-		void drawGroup(Group g);
 		//void moveModel();
 		//void rotateModel();
-}
-3DModel::3DModel(string fileName)
+};
+Model::Model(string fileName)
 {
 	this->fileName=fileName;
 	this->v.clear();
@@ -123,10 +135,10 @@ class 3DModel : public Group
 	this->vn.clear();
 	this->g.clear();
 }
-void 3DModel::decode(string s,Point &v,Texture &vt,Normal &vn)
+void Model::decode(string s,Point &v,Texture &vt,Normal &vn)
 {
 	for (int i=0;i<s.length();i++)
-		if (s[i]=='//') s[i]=' ';
+		if (s[i]=='/') s[i]=' ';
 	stringstream ss(s);
 	int vid,vtid,vnid;
 	ss>>vid>>vtid>>vnid;
@@ -134,18 +146,19 @@ void 3DModel::decode(string s,Point &v,Texture &vt,Normal &vn)
 	vt=this->vt[vtid];
 	vn=this->vn[vnid];
 }
-void 3DModel::loadModel()
+void Model::loadModel()
 {
-	3DModel::load();
-	3DModel::loadg();
+	Model::load();
+	Model::loadg();
 }
-void 3DModel::drawModel()
+void Model::drawModel()
 {
-	for (int i=0;i<g.size();i++)
+    cout<<this->g.size()<<endl;
+	for (int i=0;i<this->g.size();i++)
 		drawGroup(g[i]);
 	glFlush();
 }
-void 3DModel::drawGroup(Group g)
+void Model::drawGroup(Group g)
 {
 	if (g.hasTexture==false)
 	{
@@ -154,8 +167,8 @@ void 3DModel::drawGroup(Group g)
 			glBegin(GL_TRIANGLES);
 			for (int j=0;j<3;j++)
 			{
-				glColor3f(1,1,1);
-				glVertex3f(g.s.v[j].x,g.s.v[j].y,g.s.v[j].z);
+				glColor3f(1,0,0);
+				glVertex3f(g.s[i].v[j].x,g.s[i].v[j].y,g.s[i].v[j].z);
 			}
 			glEnd();
 		}
@@ -171,14 +184,14 @@ void 3DModel::drawGroup(Group g)
 			glBegin(GL_TRIANGLES);
 			for (int j=0;j<3;j++)
 			{
-				glTexCoord2f(g.s.vt[j].x,g.s.vt[j].y);
-				glVertex3f(g.s.v[j].x,g.s.v[j].y,g.s.v[j].z);
+				glTexCoord2f(g.s[i].vt[j].x,g.s[i].vt[j].y);
+				glVertex3f(g.s[i].v[j].x,g.s[i].v[j].y,g.s[i].v[j].z);
 			}
 			glEnd();
 		}
 	}
 }
-void 3DModel::load()
+void Model::load()
 {
 	this->v.push_back(Point(0,0,0));    //for simplify
 	this->vt.push_back(Texture(0,0,0));
@@ -191,26 +204,32 @@ void 3DModel::load()
 		string op;
 		GLfloat x,y,z;
 		ss>>op;
-		if (op!=obj) continue;
+		if (op!="v" && op!="vt" && op!="vn") continue;
 		ss>>x>>y>>z;
-		if (op=="v") this->v.push_back(Point(x,y,z));    //for simplify
+		if (op=="v")
+        {
+            x=(x-75)/75;   //change size
+            y=(y-20)/20;   //change size
+            z=(z-50)/50;   //change size
+        }  
+		if (op=="v") this->v.push_back(Point(x,y,z));   
 		if (op=="vt") this->vt.push_back(Texture(x,y,z));
 		if (op=="vn") this->vn.push_back(Normal(x,y,z));
 	}
 	input.close();
 }
-void 3DModel::loadg()
+void Model::loadg()
 {
 	fstream input(fileName.c_str());
 	string s;
-	while (getline(input,s);
+	while (getline(input,s))
 	{
 		stringstream ss(s);
 		string op;
 		ss>>op;
 		if (op!="g") continue;
 		getline(input,s);
-		Group temp;
+		Group temp("NeHe.bmp");
 		while (getline(input,s))
 		{
 			string op;
@@ -220,11 +239,30 @@ void 3DModel::loadg()
 			string x,y,z;
 			tt>>x>>y>>z;
 			Surface cur;
-			3DMovel::encode(x,cur.v[0],cur.vt[0],cur.vn[0]);
-			3DMovel::encode(y,cur.v[1],cur.vt[1],cur.vn[1]);
-			3DMovel::encode(z,cur.v[2],cur.vt[2],cur.vn[2]);
+			Model::decode(x,cur.v[0],cur.vt[0],cur.vn[0]);
+			Model::decode(y,cur.v[1],cur.vt[1],cur.vn[1]);
+			Model::decode(z,cur.v[2],cur.vt[2],cur.vn[2]);
 			temp.s.push_back(cur);
 		}
 		this->g.push_back(temp);
 	}
+}
+void display(void)
+{
+    glClearColor(0.0,0.0,0.0,1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    Model model("model.obj");
+    model.loadModel();
+    model.drawModel();
+}
+
+int main(int argc, char* argv[])
+{
+    glutInit(&argc,argv);
+    glutInitWindowPosition(100,100);
+    glutInitWindowSize(WIDTH,HEIGHT);
+    glutCreateWindow("test");
+    glutDisplayFunc(&display);
+    glutMainLoop();
+    return 0;
 }
