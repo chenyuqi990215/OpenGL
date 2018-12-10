@@ -66,11 +66,15 @@ void Light::init()
 	 * Please set the properties of the light before calling init()
 	 * If the properties of the light changed, init() is necessary.
 	 */
+    glEnable(GL_NEAREST);
+    glEnable(GL_LINEAR);
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,this->lightModelAmbient);
 	glClearColor(0.0,0.0,0.0,0.0);
 	glShadeModel(GL_SMOOTH);
-	glMaterialfv(GL_FRONT,GL_SPECULAR,this->matSpecular);
-	glMaterialfv(GL_FRONT,GL_SHININESS,this->matShininess);
+	if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,this->lightSpecular);
+	if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE, this->lightDiffuse);
+    if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT, this->lightAmbient);
+	if (this->type == SPOT_LIGHT) glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,this->matShininess);
 	glLightfv(this->light,GL_AMBIENT,this->lightAmbient);
 	if (this->type == SPOT_LIGHT) glLightf(this->light,GL_SPOT_CUTOFF,this->angle);
 	glLightfv(this->light,GL_AMBIENT,this->lightAmbient);
@@ -100,8 +104,7 @@ void Light::setDefault()
 	 * In DEFAULT mode, some properties of the light will be pre-set to default value
 	 * Note: Overwrite default value is possible afterward.
 	 */
-	Light::setLightModelAmbient(0.2,0.2,0.2);
+	Light::setLightModelAmbient(0.6,0.6,0.6);
 	Light::setMatSpecular(1,1,1);
 	Light::setMatShininess(50);
-	Light::setLightSpecular(1,1,1);
 }
