@@ -4,6 +4,7 @@
 #include <GL/glaux.h>
 #include <bits/stdc++.h>
 #include "point.h"
+#include "loadtexture.h"
 using namespace std;
 class Group
 {
@@ -11,9 +12,11 @@ class Group
 		vector <Surface> s;
 		string textureName;
 		bool hasTexture;
+		LoadTexture texture;
 	public:
 		Group();
-		Group(string textureName);
+		void drawGroup();
+		void updateTexture(string textureName);
 };
 
 #endif // GROUP_H_INCLUDED
