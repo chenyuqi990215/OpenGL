@@ -6,16 +6,25 @@
 #include <GL/gl.h>
 #include <GL/glaux.h>
 #include "loadtexture.h"
+LoadTexture::LoadTexture()
+{
+    this->textureID=0;
+}
 LoadTexture::LoadTexture(string textureName)
 {
 	this->textureName=textureName;
 }
+void LoadTexture::setTextureName(string textureName)
+{
+    this->textureName=textureName;
+}
 void LoadTexture::load()
 {
+    if (texturePool.count(this->textureName))
+        this->textureID=texturePool[textureName];
 	const int BMP_Header_Length=54;
 	GLint width,height,total_bytes;
 	GLubyte* pixels=0;
-	GLuint textureID=0;
 	FILE* pFile=fopen(this->textureName.c_str(),"rb");
 	fseek(pFile,0x0012,SEEK_SET);
 	fread(&width,4,1,pFile);
@@ -34,6 +43,11 @@ void LoadTexture::load()
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	free(pixels);
 	fclose(pFile);
+	texturePool[this->textureName]=this->textureID;
+}
+bool LoadTexture::hasLoad()
+{
+    return this->textureID!=0;
 }
 void LoadTexture::init()
 {
