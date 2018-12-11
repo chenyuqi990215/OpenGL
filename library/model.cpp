@@ -37,7 +37,6 @@ void Model::loadModel()
 }
 void Model::drawModel()
 {
-    cout<<this->g.size()<<endl;
 	for (int i=0;i<this->g.size();i++)
 		drawGroup(g[i]);
 	glFlush();
