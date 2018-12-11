@@ -23,7 +23,7 @@ class Model : public Group
 		string fileName;
 		void load();
 		void loadg();
-		void drawGroup(Group g);
+		void drawGroup(Group &g);
 		void decode(string s,Point &v,Texture &vt,Normal &vn);
 	public:
 		Model(string fileName);
